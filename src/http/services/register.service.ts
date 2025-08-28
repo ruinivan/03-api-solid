@@ -1,6 +1,6 @@
 import { hash } from 'bcryptjs'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
-import type { UsersRepository } from '@/repositories/prisma/users-repository'
+import type { UsersRepository } from '@/repositories/users-repository'
 import type { User } from '@prisma/client'
 
 interface RegisterServiceRequest {
@@ -8,11 +8,6 @@ interface RegisterServiceRequest {
   email: string
   password: string
 }
-
-// SOLID
-
-// D -> Dependency Inversion Principle
-
 interface RegisterServiceResponse {
   user: User
 }
