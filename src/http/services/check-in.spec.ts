@@ -1,4 +1,4 @@
-import { expect, test, describe, beforeEach } from 'vitest'
+import { expect, test, describe, beforeEach, vi, afterEach } from 'vitest'
 import { InMemoryCheckInsRepository } from '@/repositories/in-memory/in-memory-check-ins-repository'
 import { CheckInService } from './check-in.service'
 
@@ -9,6 +9,12 @@ describe('Register Service', () => {
   beforeEach(() => {
     checkInRepository = new InMemoryCheckInsRepository()
     sut = new CheckInService(checkInRepository)
+
+    vi.useFakeTimers()
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
   })
 
   test('It should be able to check in', async () => {
@@ -21,6 +27,8 @@ describe('Register Service', () => {
   })
 
   test('It should not be able to check in twich in the same day', async () => {
+    vi.setSystemTime(new Date(2025, 0, 20, 8, 0, 0))
+
     await sut.execute({
       userId: 'user-01',
       gymId: 'gym-01',
@@ -31,6 +39,24 @@ describe('Register Service', () => {
         userId: 'user-01',
         gymId: 'gym-01',
       }),
-    ).toEqual(expect.any(String))
+    ).rejects.toBeInstanceOf(Error)
+  })
+
+  test('It should be able to check in twich but in different days', async () => {
+    vi.setSystemTime(new Date(2025, 0, 20, 8, 0, 0))
+
+    await sut.execute({
+      userId: 'user-01',
+      gymId: 'gym-01',
+    })
+
+    vi.setSystemTime(new Date(2025, 0, 21, 8, 0, 0))
+
+    const { checkIn } = await sut.execute({
+      userId: 'user-01',
+      gymId: 'gym-01',
+    })
+
+    expect(checkIn.id).toEqual(expect.any(String))
   })
 })
