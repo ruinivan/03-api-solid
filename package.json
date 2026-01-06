@@ -10,7 +10,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:ui": "vitest --ui"
+    "test:ui": "vitest --ui",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down"
   },
   "repository": {
     "type": "git",
