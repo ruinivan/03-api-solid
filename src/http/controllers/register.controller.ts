@@ -1,7 +1,7 @@
 import type { FastifyRequest, FastifyReply } from 'fastify'
 import z from 'zod'
-import { UserAlreadyExistsError } from '../services/errors/user-already-exists-error'
-import { registerServiceFactory } from '../services/factories/register-service.factory'
+import { UserAlreadyExistsError } from '../../services/errors/user-already-exists-error'
+import { registerServiceFactory } from '../../services/factories/register-service.factory'
 
 export async function registerController(
   request: FastifyRequest,

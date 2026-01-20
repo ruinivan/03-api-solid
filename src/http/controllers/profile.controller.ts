@@ -1,5 +1,5 @@
 import type { FastifyRequest, FastifyReply } from 'fastify'
-import { getUserProfileServiceFactory } from '../services/factories/get-user-profile-service.factory'
+import { getUserProfileServiceFactory } from '../../services/factories/get-user-profile-service.factory'
 
 export async function profileController(
   request: FastifyRequest,
