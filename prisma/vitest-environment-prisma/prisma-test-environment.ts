@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma'
+import { PrismaClient } from '@prisma/client'
 import { execSync } from 'child_process'
 import { randomUUID } from 'crypto'
 import 'dotenv/config'
@@ -18,7 +18,6 @@ function generateDatabaseUrl(schema: string) {
 
 export default <Environment>{
   name: 'prisma',
-  transformMode: 'ssr',
   async setup() {
     // Criar o banco de testes
 
@@ -27,11 +26,21 @@ export default <Environment>{
 
     process.env.DATABASE_URL = databaseUrl
 
-    execSync('npx prisma migrate deploy')
+    execSync('npx prisma migrate deploy', {
+      env: {
+        ...process.env,
+        DATABASE_URL: databaseUrl,
+        NODE_OPTIONS: '--import tsx',
+      },
+    })
 
     return {
       async teardown() {
         // Apagar o banco de testes
+
+        const prisma = new PrismaClient({
+          datasourceUrl: databaseUrl,
+        })
 
         await prisma.$executeRawUnsafe(
           `DROP SCHEMA IF EXISTS "${schema}" CASCADE`,
